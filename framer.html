@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Wattch Test Page: Framer</title>
+</head>
+<body>
+    <iframe id="framer" height="600" width="800"></iframe>
+    <script>
+      const framer = document.getElementById("framer");
+      const urlParams = new URLSearchParams(window.location.search);
+      const loc = urlParams.get("location");
+      if (loc) {
+        framer.src = loc;
+      }
+    </script>
+</body>
+</html>

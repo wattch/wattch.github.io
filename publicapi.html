@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Wattch Test Page: Kiosk API</title>
+</head>
+<body>
+    <div id="output">default text</div>
+    <script>
+      let siteID = "3dtPKHsn";
+      let domain = "api.staging.wattch.io";
+      let apiKey = "eyJ1c2VyX2lkIjo3Nzc3LCJzZWNyZXQiOiJzbDVFd1Rud0V3Z1NycTNvbTRLWFJjRE1EL3dNMnhQRlRSaEVibTlDWTBzPSJ9";
+      let op = "read";
+
+      const urlParams = new URLSearchParams(window.location.search);
+      let val = urlParams.get("siteID");
+      if (val) {
+        siteID = val;
+      }
+      val = urlParams.get("domain");
+      if (val) {
+        domain = val;
+      }
+      val = urlParams.get("apiKey");
+      if (val) {
+        apiKey = val;
+      }
+      val = urlParams.get("op");
+      if (val) {
+        op = val;
+      }
+
+      const headers = {
+        "X-API-Key": apiKey,
+      }
+
+      const out = document.getElementById("output");
+      out.innerText = "running";
+
+      const doRead = () => {
+        const url = "https://" + domain + "/v1/sites/" + siteID;
+        fetch(url, {headers: headers})
+          .then(function (response) {
+            if (response.status !== 200) {
+              out.innerText = 'fetch error: ' + response.status;
+              return;
+            }
+            response.json().then((data) => {
+              console.log(data);
+              out.innerText = data["address"]["address"];
+            });
+          }).catch(function (err) {
+          out.innerText = "error: " + err;
+        })
+      }
+
+      const doWrite = () => {
+        // TODO(ianrose): implement me once we have a write command that is easy to call on test orgs
+        // Maybe SetMaintenanceMode?
+
+        const url = "https://" + domain + "/v1/todo-fill-me-in";
+        const opts = {
+          method: "PUT",
+          headers: headers,
+          body: JSON.stringify({ /* fill me in */})
+        }
+        fetch(url, opts)
+          .then(function (response) {
+            out.innerText = 'fetch status: ' + response.status;  // should be 403?
+          }).catch(function (err) {
+          out.innerText = "error: " + err;
+        })
+      }
+
+      switch (op) {
+        case "read":
+          doRead();
+          break;
+        case "write":
+          doWrite();
+          break;
+        default:
+          out.innerText = "invalid op: " + op;
+      }
+    </script>
+</body>
+</html>

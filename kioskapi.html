@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Wattch Test Page: Kiosk API</title>
+</head>
+<body>
+    <div id="output">default text</div>
+    <script>
+      let siteID = "3dtPKHsn";
+      let domain = "kiosk.staging.wattch.io";
+      const urlParams = new URLSearchParams(window.location.search);
+      let val = urlParams.get("siteID");
+      if (val) {
+        siteID = val;
+      }
+      val = urlParams.get("domain");
+      if (val) {
+        domain = val;
+      }
+
+      const out = document.getElementById("output");
+      out.innerText = "running";
+
+      const url = "https://" + domain + "/api/v2/sites/" + siteID + "/info";
+      fetch(url)
+        .then(function(response) {
+          if (response.status !== 200) {
+            out.innerText = 'fetch error: ' + response.status;
+            return;
+          }
+
+          response.json().then((data) => {
+            console.log(data);
+            out.innerText = data["location"]["address1"];
+          });
+      }).catch(function(err) {
+        out.innerText = "error: " + err;
+      })
+    </script>
+</body>
+</html>
